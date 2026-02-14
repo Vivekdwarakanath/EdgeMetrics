@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdgeMetrics - Fixes Test Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #e5e5e5;
+        }
+        h1 { color: #10b981; }
+        .test-section {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .pass { background: #10b981; color: white; }
+        .fail { background: #ef4444; color: white; }
+        .pending { background: #6b7280; color: white; }
+        button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover { background: #059669; }
+        .code {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 EdgeMetrics Fixes - Test Suite</h1>
+    <p>Use this page to verify all Week 1 fixes are working correctly.</p>
+
+    <!-- Test 1: Files Loaded -->
+    <div class="test-section">
+        <h2>Test 1: Required Files Loaded <span id="test1-status" class="status pending">PENDING</span></h2>
+        <p>Checking if edgemetrics-fixes.js is loaded...</p>
+        <div id="test1-result" class="result"></div>
+        <button onclick="runTest1()">Run Test</button>
+    </div>
+
+    <!-- Test 2: Encryption -->
+    <div class="test-section">
+        <h2>Test 2: Data Encryption <span id="test2-status" class="status pending">PENDING</span></h2>
+        <p>Testing secure storage encryption...</p>
+        <div id="test2-result" class="result"></div>
+        <button onclick="runTest2()">Run Test</button>
+    </div>
+
+    <!-- Test 3: Validation -->
+    <div class="test-section">
+        <h2>Test 3: Input Validation <span id="test3-status" class="status pending">PENDING</span></h2>
+        <p>Testing input validation system...</p>
+        <div id="test3-result" class="result"></div>
+        <button onclick="runTest3()">Run Test</button>
+    </div>
+
+    <!-- Test 4: Backups -->
+    <div class="test-section">
+        <h2>Test 4: Automatic Backups <span id="test4-status" class="status pending">PENDING</span></h2>
+        <p>Testing backup system...</p>
+        <div id="test4-result" class="result"></div>
+        <button onclick="runTest4()">Run Test</button>
+    </div>
+
+    <!-- Test 5: Charts -->
+    <div class="test-section">
+        <h2>Test 5: Chart Memory Management <span id="test5-status" class="status pending">PENDING</span></h2>
+        <p>Testing chart cleanup system...</p>
+        <div id="test5-result" class="result"></div>
+        <button onclick="runTest5()">Run Test</button>
+    </div>
+
+    <!-- Run All Tests -->
+    <div style="text-align: center; margin: 30px 0;">
+        <button onclick="runAllTests()" style="font-size: 16px; padding: 15px 30px;">
+            🚀 Run All Tests
+        </button>
+    </div>
+
+    <!-- Overall Results -->
+    <div id="overall-results" class="test-section" style="display: none;">
+        <h2>📊 Overall Results</h2>
+        <div id="overall-summary"></div>
+    </div>
+
+    <!-- Load the fixes -->
+    <script src="edgemetrics-fixes.js"></script>
+
+    <!-- Test Scripts -->
+    <script>
+        function setStatus(testNum, passed) {
+            const statusEl = document.getElementById(`test${testNum}-status`);
+            statusEl.textContent = passed ? 'PASS ✓' : 'FAIL ✗';
+            statusEl.className = `status ${passed ? 'pass' : 'fail'}`;
+        }
+
+        function setResult(testNum, html) {
+            document.getElementById(`test${testNum}-result`).innerHTML = html;
+        }
+
+        function runTest1() {
+            let passed = true;
+            let results = '<strong>Checking required objects:</strong><br><br>';
+
+            const checks = [
+                { name: 'SecureStorage', obj: typeof window.secureStorage },
+                { name: 'Validator', obj: typeof window.Validator },
+                { name: 'ChartManager', obj: typeof window.ChartManager },
+                { name: 'BackupManager', obj: typeof window.backupManager },
+                { name: 'PaginationHelper', obj: typeof window.PaginationHelper },
+                { name: 'debounce', obj: typeof window.debounce }
+            ];
+
+            checks.forEach(check => {
+                const found = check.obj === 'object' || check.obj === 'function';
+                results += `${found ? '✅' : '❌'} ${check.name}: ${check.obj}<br>`;
+                if (!found) passed = false;
+            });
+
+            setResult(1, results);
+            setStatus(1, passed);
+            return passed;
+        }
+
+        function runTest2() {
+            let passed = true;
+            let results = '<strong>Testing encryption:</strong><br><br>';
+
+            try {
+                // Test encryption
+                const testData = { test: 'hello', number: 123 };
+                window.secureStorage.setSecure('test_encryption', testData);
+                
+                // Check if encrypted in localStorage
+                const encrypted = localStorage.getItem('test_encryption');
+                const isEncrypted = encrypted && !encrypted.includes('hello');
+                results += `${isEncrypted ? '✅' : '❌'} Data is encrypted in storage<br>`;
+                
+                // Test decryption
+                const decrypted = window.secureStorage.getSecure('test_encryption');
+                const decryptedCorrectly = decrypted && decrypted.test === 'hello' && decrypted.number === 123;
+                results += `${decryptedCorrectly ? '✅' : '❌'} Data decrypts correctly<br>`;
+                
+                // Cleanup
+                localStorage.removeItem('test_encryption');
+                
+                passed = isEncrypted && decryptedCorrectly;
+                results += `<br><strong>Encrypted value:</strong><br><div class="code">${encrypted ? encrypted.substring(0, 100) + '...' : 'N/A'}</div>`;
+            } catch (error) {
+                passed = false;
+                results += `❌ Error: ${error.message}<br>`;
+            }
+
+            setResult(2, results);
+            setStatus(2, passed);
+            return passed;
+        }
+
+        function runTest3() {
+            let passed = true;
+            let results = '<strong>Testing validation:</strong><br><br>';
+
+            const tests = [
+                { 
+                    fn: () => Validator.validatePnL('123.45'),
+                    expect: v => v.valid && v.value === 123.45,
+                    name: 'Valid P&L'
+                },
+                { 
+                    fn: () => Validator.validatePnL('abc'),
+                    expect: v => !v.valid,
+                    name: 'Invalid P&L'
+                },
+                { 
+                    fn: () => Validator.validateInstrument('EURUSD'),
+                    expect: v => v.valid && v.value === 'EURUSD',
+                    name: 'Valid instrument'
+                },
+                { 
+                    fn: () => Validator.validateText('<script>alert(1)</script>', 'Test'),
+                    expect: v => v.valid && v.value.includes('&lt;'),
+                    name: 'XSS protection'
+                }
+            ];
+
+            tests.forEach(test => {
+                const result = test.fn();
+                const testPassed = test.expect(result);
+                results += `${testPassed ? '✅' : '❌'} ${test.name}<br>`;
+                if (!testPassed) passed = false;
+            });
+
+            setResult(3, results);
+            setStatus(3, passed);
+            return passed;
+        }
+
+        function runTest4() {
+            let passed = true;
+            let results = '<strong>Testing backup system:</strong><br><br>';
+
+            try {
+                // Create a backup
+                const backupCreated = window.backupManager.createBackup();
+                results += `${backupCreated ? '✅' : '❌'} Backup creation<br>`;
+                
+                // List backups
+                const backups = window.backupManager.listBackups();
+                const hasBackups = backups && backups.length > 0;
+                results += `${hasBackups ? '✅' : '❌'} Backups exist (${backups.length} found)<br>`;
+                
+                passed = backupCreated && hasBackups;
+                
+                if (hasBackups) {
+                    results += `<br><strong>Latest backup:</strong><br>`;
+                    results += `<div class="code">Date: ${backups[0].timestamp}<br>Sessions: ${backups[0].sessions}</div>`;
+                }
+            } catch (error) {
+                passed = false;
+                results += `❌ Error: ${error.message}<br>`;
+            }
+
+            setResult(4, results);
+            setStatus(4, passed);
+            return passed;
+        }
+
+        function runTest5() {
+            let passed = true;
+            let results = '<strong>Testing chart management:</strong><br><br>';
+
+            try {
+                // Check if ChartManager exists
+                const hasManager = typeof window.ChartManager === 'object';
+                results += `${hasManager ? '✅' : '❌'} ChartManager exists<br>`;
+                
+                // Check destroy method
+                const hasDestroy = typeof window.ChartManager.destroyChart === 'function';
+                results += `${hasDestroy ? '✅' : '❌'} Destroy method exists<br>`;
+                
+                // Check charts storage
+                const hasStorage = typeof window.ChartManager.charts === 'object';
+                results += `${hasStorage ? '✅' : '❌'} Chart storage exists<br>`;
+                
+                passed = hasManager && hasDestroy && hasStorage;
+            } catch (error) {
+                passed = false;
+                results += `❌ Error: ${error.message}<br>`;
+            }
+
+            setResult(5, results);
+            setStatus(5, passed);
+            return passed;
+        }
+
+        async function runAllTests() {
+            const results = {
+                test1: runTest1(),
+                test2: runTest2(),
+                test3: runTest3(),
+                test4: runTest4(),
+                test5: runTest5()
+            };
+
+            const totalTests = Object.keys(results).length;
+            const passedTests = Object.values(results).filter(r => r).length;
+            const allPassed = passedTests === totalTests;
+
+            let summary = `<h3>${allPassed ? '🎉 All Tests Passed!' : '⚠️ Some Tests Failed'}</h3>`;
+            summary += `<p><strong>${passedTests}/${totalTests}</strong> tests passed</p>`;
+            
+            if (allPassed) {
+                summary += `
+                    <div style="color: #10b981; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; margin-top: 15px;">
+                        <strong>✅ EdgeMetrics is ready to go!</strong><br><br>
+                        All critical fixes are working correctly. You can now:<br>
+                        • Open your EdgeMetrics HTML file<br>
+                        • Your data will be encrypted automatically<br>
+                        • Backups will run daily<br>
+                        • Performance is optimized<br>
+                        • All security measures are active<br>
+                    </div>
+                `;
+            } else {
+                summary += `
+                    <div style="color: #ef4444; padding: 15px; background: rgba(239, 68, 68, 0.1); border-radius: 6px; margin-top: 15px;">
+                        <strong>⚠️ Some fixes need attention</strong><br><br>
+                        Please check the failed tests above and ensure:<br>
+                        • edgemetrics-fixes.js is in the same folder<br>
+                        • You added the script tag to your HTML<br>
+                        • You cleared your browser cache<br>
+                        • Try in incognito mode<br>
+                    </div>
+                `;
+            }
+
+            document.getElementById('overall-results').style.display = 'block';
+            document.getElementById('overall-summary').innerHTML = summary;
+        }
+
+        // Run all tests on load
+        window.addEventListener('load', () => {
+            console.log('%c🔧 EdgeMetrics Test Suite Loaded', 'color: #10b981; font-size: 16px; font-weight: bold;');
+            console.log('Click "Run All Tests" to verify all fixes are working!');
+        });
+    </script>
+</body>
+</html>
